@@ -43,5 +43,13 @@ pipeline{
                 }
             }
         }
+        stage('Delete Docker image'){
+            steps{
+                script{
+                    sh "docker rm image ${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker rm image ${IMAGE_NAME}:latest"
+                }
+            }
+        }
     }
 }
