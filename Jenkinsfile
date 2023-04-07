@@ -51,5 +51,18 @@ pipeline{
                 }
             }
         }
+        stage('Update kubernetes deployment'){
+            steps{
+                script{
+                    sh """
+                        cat deployment.yaml
+
+                        sed -i "/s${IMAGE_NAME}.*/${IMAGE_NAME}:${BUILD_NUMBER}/g" deployment.yaml
+
+                        cat deployment.yaml
+                    """
+                }
+            }
+        }
     }
 }
