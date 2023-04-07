@@ -57,10 +57,26 @@ pipeline{
                     sh """
                         cat deployment.yaml
 
-                        sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
+                        sed -i '/s${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
 
                         cat deployment.yaml
                     """
+                }
+            }
+        }
+        stage('Push changed deployment file to GitHub'){
+            steps{
+                script{
+                    sh """
+                        git config --global user.name "Jenkins"
+                        git config --global user.email "jenkins@gmail.com"
+                        git add deployment.yaml
+                        git commit -m "updated deployment file"
+                    """
+
+                    withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
+                        sh "git push https://github.com/AayushBangroo/gitops_argocd.git"
+                    }
                 }
             }
         }
